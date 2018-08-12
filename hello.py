@@ -65,10 +65,29 @@ def mongodb():
     return jsonify({'SaylaniStudents': students})
 
 
-@app.route("/add_user_to_mongodb")
-def add_user_to_mongodb():
+@app.route("/add")
+def add():
     add = mongo.db.users.insert({'name': 'kashan'})
     return "Successfully add"
+
+
+@app.route("/search", methods=['GET','POST'])
+def search():
+    if request.method == "POST":
+        usearch=request.form['user']
+        students=[]
+        records = mongo.db.users.find({'name': usearch})
+        for user in records:
+            students.append({'user': user['name']})
+        return jsonify({'SearchData': students})
+    else:
+        return '''
+        <form method="post">
+        <h2>Search</h2>
+        <input type="text" name="user">
+        <input type="submit" value="search">
+        </form>
+    '''
 
 
 app.run(debug='true')
